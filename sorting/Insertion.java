@@ -66,7 +66,7 @@ public class Insertion {
 
     public static void main(String[] args) {
         //从标准输入读取字符串，将他们排序输出
-        String[] a = In.readStrings(args[0]);
+        String[] a = new In(args[0]).readAllStrings();
         sort(a);
         assert isSorted(a);
         show(a);   

@@ -3,13 +3,12 @@ import edu.princeton.cs.algs4.StdOut;
 import edu.princeton.cs.algs4.StdRandom;
 /**
  * Quick
- * 算法2.5 快速排序
- * 应用最广泛的排序算法，基本思路是将序列切分为比哨兵大的和比哨兵小的两部分
- * 递归切分下去后，足够小的序列将会有序，则整体也有序。
- * 特点：实现简单，原地排序（只需要一个很小的复杂栈）
- *       不稳定排序，有时会退化为平方级别
+ * 算法2.5 三向切分快速排序
+ * 快速排序的优化算法
+ * 特点：除非和切分元素相等，其他元素都会被交换，
+ * 对于存在大量重复元素的序列有更高的效率。
  */
-public class Quick {
+public class Quick3Way {
 
     public static void sort(Comparable[] a){
         StdRandom.shuffle(a); //消除对输入的依赖
@@ -18,13 +17,26 @@ public class Quick {
 
     private static void sort(Comparable[] a,int lo,int hi){
         if(hi <= lo) return;
-        int j = partition(a, lo, hi);//切分
-        sort(a,lo,j-1);//将左半部分a[lo..j-1]排序
-        sort(a,j+1,hi);//将右半部分a[j+1..hi]排序
+        int lt = lo; //左游标
+        int i = lo + 1; //哨兵游标
+        int gt = hi;//有游标
+        Comparable v = a[lo];//哨兵
+        while (i <= gt) {//i从lo+1递增至gt，循环退出
+            int cmp = a[i].compareTo(v);//less函数无法判断相等的情况
+            if(cmp < 0){
+                exch(a, lt++, i++); //a[lt+1..i]为重复元素
+            }else if(cmp > 0){
+                exch(a,i,gt--);
+            }else{
+                i++;
+            }
+        }//循环结束后a[lo..lt-1] < v =a[lt..gt] < a[gt+1..hi]
+        sort(a,lo,lt-1);
+        sort(a,gt+1,hi);
     }
 
     private static int partition(Comparable[] a,int lo,int hi){
-        //将序列切分为a[lo..i-1],a[i],a[i+1..hi]
+        //将数组切分为a[lo..i-1],a[i],a[i+1..hi]
         int i = lo;//左扫描指针
         int j = hi + 1;//右扫描指针
         Comparable v = a[lo]; // 待排序序列的第一个元素为哨兵
@@ -76,7 +88,7 @@ public class Quick {
     }
     
     private static void show(Comparable [] a){
-        //在单行中打印序列
+        //在单行中打印数组
         for (int i = 0; i < a.length; i++) {
             StdOut.print(a[i] +" ");
         }

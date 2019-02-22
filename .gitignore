@@ -1,3 +1,5 @@
 *.class
 launch.json
 algs4-data/
+*.txt
+
